@@ -1,0 +1,164 @@
+git常用命令
+
+$ mkdir abc
+$ cd abc/
+将项目拷贝到当前目录：  
+$ git clone https://git.develop.reolink.com.cn/liufn/test.git      (关联)
+  origin 是当你运行 git clone 时默认的远程仓库名字
+
+$ git@git.develop.reolink.com.cn:liufn/test.git    (ssh协议的要仓库密码)
+
+$ git clone $ git@git.develop.reolink.com.cn:liufn/test.git  abc   (将项目内容拷贝到abc目录中，一般这种)
+ 
+打开软件修改项目内容：
+$ code .
+进入项目目录(初始化了)
+$ cd test/
+$ git add .
+$ git commit -m "修改"
+
+撤销merge
+1.使用git merge操作合并代码但还没add时，若想取消这次合并，
+  使用“git merge --abort”命令即可
+2.如果已经 git add了， 则先用 git reflog 指令显示历史的操作
+  再用 'git reset --hard commit id’就可以回退到操作之前的状态了
+
+若提交有问题，则可以回退
+$ git reset --hard HEAD~1     (回退到上一个版本)
+回滚一个commit状态。能回到add之后那里。
+git reset --soft HEAD^
+
+回滚一个add状态到工作区
+git reset HEAD
+
+$ git push origin master      （提交到远程仓库origin的master分支）
+        ||
+$ git push origin master:master   ：把本地的master分支 传到 远程仓库的master分支中
+$ git push origin master:new    ：把本地的master分支 传到 远程仓库的new分支中(若没有new分支，则直接创建)
+（若是远程仓库中已存在的一个分支，内容可能不相同，可能不能直接push上去）
+
+
+git status
+查看仓库当前的状态，显示有变更的文件。
+
+本地获取远程仓库代码：
+1.直接拉取并合并最新代码
+$ git pull origin master   ：拉取远程仓库origin的master分支，并合并到 到当前分支
+$ git pull origin dev   ：拉取远程仓库origin的dev分支，并合并到 当前分支
+(最开始clone，内容变化了才能拉取，拉取到更新的内容)
+
+2.获取最新代码到本地，然后手动合并分支
+$ git fetch origin master:master1 
+在本地建立master1分支，并获取远端仓库origin的master分支到master1分支中(省略创建分支，则是获取到当前的分支中)
+$ git merge master1  
+手动合并本地分支master1到当前分支
+
+$ git fetch origin      (提取远程仓库origin中更新的数据)
+$ git merge origin/master  （合并origin远程仓库的master分支，合并而自己没有的数据）
+        ||
+$ git pull origin master 
+
+
+查看当前有的分支
+$ git branch
+创建分支testing
+$ git branch testing
+切换到分支testing
+$ git checkout testing
+
+在某个分支提交后，其他分支中看不到；最后合并到主分支
+创建新分支newtest，并切换到该分支
+$ git checkout -b newtest
+基于该提交点(哈希值)创建b1分支，并切换到b1分支  (若不指定哈希值，则是基于当前提交点创建)
+$ git checkout -b b1 a7efedece71f68101093b5f773e7b^Cc2a6b45f8
+
+删除分支testing
+$ git branch -d testing
+
+
+合并分支到主分支
+git checkout master      ：切换到master
+$ git merge newtest      ：将newtest合并到主分支master
+
+退出保存合并分支页面：    先按esc  ，再按 :wq
+
+$ git branch -d newtest   : 合并后再删除newtest分支
+
+$ git push origin master   
+合并到主分支后，在主分支中一起提交到远程仓库的
+
+
+冲突：主分支和分支都提交了同一个文件，文件的内容不同
+若合并，则同一个文件内容不同，则可以对该文件进行手动修改，来解决整个冲突。
+$ vim runoob.php   
+$ git add run.php  ：为run.php文件的冲突已解决
+$ cat runoob.php   ：查看一下最后的内容
+
+
+与远程仓库建立的连接
+1.clone后便是关联了
+2.若重新远程关联其他仓库：
+   git remote add origin git@gitee.com:imnoob/runoob-test.git
+3.若想切换关联，则先删除关联，再重新连接
+   git remote rm origin
+   git remote add origin git@gitee.com:imnoob/runoob-test.git
+
+4.再添加远程一个仓库，并命名为pd (可独立连接多个仓库)
+$ git remote add pb https://github.com/paulboone/ticgit
+
+查看当前连接：
+git remote -v
+
+
+git branch -a：查看本地(同步过来的)和远程仓库的所有分支
+git branch -r:  查看远程仓库的所有分支
+
+
+“origin” 是当你运行 git clone 时默认的远程仓库名字
+“master” 是当你本地仓库 默认的起始分支(主分支)名字
+
+
+
+对文件的一些操作
+
+ls  ：查看文件 （提交的+仓库中的）
+git log  ：查看提交历史记录      （q退出）
+
+mkdir      :创建目录
+$ git rm test.txt       ：删除test.txt
+$ touch runoob.php     ：创建文件runoob.php
+$ vim runoob.php        ：编辑runoob.php文件内容       insert进行写内容
+$ cat runoob.php         ：查看runoob.php文件的内容  
+ 
+
+
+
+
+
+
+
+commit -m "feat(product): 整理press页面的图片目录及引用"
+
+feat(product): 产品页面 Reolink Argus 3 增加延时摄影推广信息
+dev-argus-3
+
+feat(product): Reolink Drive 产品页面补充 Support 链接
+dev-reolink-drive
+
+feat(product): 整理press页面的图片目录及引用
+$ git commit -m "feat(product): 整理press页面的图片目录及引用"
+
+dev-press
+
+$ git push origin press:dev-press   提交 press分支到远程仓库的dev-press分支中
+
+feat(product):网线文案优化-删除Cat 5
+
+
+
+
+
+
+
+
+
